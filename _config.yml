@@ -1,0 +1,56 @@
+# Dependencies
+markdown:	kramdown
+# Permalinks
+permalink:	/article/:title
+
+# Setup
+title:            VulcanoSec Blog
+tagline:          'blog'
+description:      'VulcanoSec Blog'
+url:              http://vulcanosec.com
+baseurl:          /blog
+commentsystem:    google
+disqus:           example
+
+author:
+  name:           Dominik Richter
+  url:            https://twitter.com/arlimus
+
+paginate:         5
+
+# Custom vars
+icon:             /assets/images/v-logo.png
+cover:            /assets/images/bg.compliance.png.5f77be0d.jpeg
+
+social:
+  - icon:         twitter
+    url:          https://twitter.com/vulcanosec
+    desc:         Follow us on twitter
+
+  - icon:         github
+    url:          https://github.com/vulcanosec
+    desc:         Fork us on github
+
+  - icon:         feed
+    url:          http://vulcanosec.com/blog/atom.xml
+    desc:         Subscribe to our feed
+
+menu:
+  - title:        Blog
+    url:          /blog
+
+  - title:        Home
+    url:          /
+
+copyright:
+  author:         VulcanoSec
+  url:            http://vulcanosec.com
+  type_title:     All rights reserved
+
+parallax:         true
+
+# Google Analytics (add the UA Code, e.g.: UA-xxxxxxxx-1)
+google_analytics:  UA-45216258-2
+
+# Default Theme Color for Chrome on Android Lollipop (Use RGB ColorCode without `#`, e.g.: `db5945`)
+theme_color:       7E9576
