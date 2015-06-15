@@ -3,7 +3,7 @@ layout: post
 title: "Automation and the Shell"
 date:   2015-06-15 21:00:00
 image:
-    url: /assets/article_images/2015-03-01-npm-dependency/airplane-crash.jpg
+    url: /assets/article_images/2015-06-15-automation-and-the-shell/snail.m.jpeg
 video: false
 comments: true
 theme_color: 302F2D
@@ -25,7 +25,7 @@ This is probably one of the oldest cases for automating commands in your environ
 
 For a simple example, take a server which connects to a client machine via SSH and runs some shell commands:
 
-```bash
+```
 pssh -h ips.txt -o /tmp/installs apt-get install apache2
 ```
 
@@ -35,13 +35,13 @@ There are some obvious limitations here, as our example shows. What about runnin
 
 However, these issues can be solved, if your server knows the target system and can adjust the command it will run. All you have to do, is to tell your server to install:
 
-```bash
+```
 package "apache"
 ```
 
 and it would run the appropriate command on each node:
 
-```bash
+```
 # for Ubuntu/Debian:
 apt-get install apache2
 # for RedHat/CentOS:
@@ -65,7 +65,7 @@ The other approach is a standalone execution of commands. In this model, all com
 
 Taking everything into account we have seen so far, we can mix and combine these solutions to achieve the right fit for our environment. As long as we are able to reach the shell, as a common layer of execution, we are likely able to alter the way in which commands are delivered and executed.
 
-Let's construct a small example: We want to run a security check on a machine. Regularly we would use our server to log into the node and run all commands on the client's shell (case 1). However, some machines may not grant such access. We can offer to install an agent instead, which gets its commands from a central server (case 2). But what if the client doesn't want to install our agent?
+Let's construct a small example: We want to run a security check on a machine. Regularly we would use our server to log into the node and run all commands on the client's shell (case 1). However, some machines may not grant such access. We can offer to install an agent instead, which gets its commands from a central server (case 2). But what if the client doesn't want to install our agent? This may be the case for critical infrastructure, which must be treated carefully.
 
 In this case, we could just hand all shell-commands our server would transfer in case 1, and provide them to the client directly. As this is the least common layer, there is no installation of additional components on the client and the operator could retain full control over what is transferred to the server. If you look at it closely, however, this is just one variant of case 2: You use the client's shell directly and run a different proxy for the work your agent would do. In principle, however, nothing changes.
 
@@ -73,8 +73,8 @@ The real challenge of this case, is to provide the most common layer which requi
 
 ## Summary
 
-Managing your nodes remotely has seen different mechanisms, often running on top of the operating system's shell (or equivalent). These may provide their own language, to help operators focus on their goals instead of low-level issues. However, at the end of day, it boils down to a common execution layer.
+Managing your nodes remotely has seen different mechanisms, often running on top of the operating system's shell (or equivalent). These may provide their own language, to help operators focus on their goals instead of low-level issues.
 
-While many security professionals are still writing this common layer themselves, there are solutions that take the power and simplicity from development and bringing it to the realm of security and compliance.
+While many security professionals are still often scripting on the shell layer directly, there are solutions that take the power and simplicity from development and bringing it to the realm of security and compliance.
 
-At VulcanoSec, we provide a security and compliance scanner, that covers all three models seen above: Remote command execution, lokal agents, and an alternate execution layer. You can choose your favorite approach based on your environment and requirements. If you are already familiar with DevOps solutions, you will feel right at home with this DevSec solution.
+At VulcanoSec, we provide a security and compliance scanner, that covers all three models seen above: Remote command execution, local agents, and an alternate execution layer. You can choose your favorite approach based on your environment and infrastructure requirements. If you are already familiar with DevOps solutions, you will feel right at home with this DevSec solution.

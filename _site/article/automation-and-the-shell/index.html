@@ -1,0 +1,222 @@
+<html>
+	<head>
+	
+	<link href="//gmpg.org/xfn/11" rel="profile">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<link rel="canonical" href="http://vulcanosec.com/blog/article/automation-and-the-shell" />
+	<meta name="description" content="Managing your nodes has seen a wonderful change with the rise of DevOps and its newly found tools. Whether it's..." />
+	<meta property="og:description" content="Managing your nodes has seen a wonderful change with the rise of DevOps and its newly found tools. Whether it's..." />
+	<meta itemprop="image" content="http://vulcanosec.com/blog/assets/article_images/2015-06-15-automation-and-the-shell/snail.m.jpeg" />
+	<meta property="og:image" content="http://vulcanosec.com/blog/assets/article_images/2015-06-15-automation-and-the-shell/snail.m.jpeg" />
+	<meta property="og:title" content="Automation and the Shell" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="http://vulcanosec.com/blog/article/automation-and-the-shell" />
+	<meta property="og:site_name" content="VulcanoSec Blog" />
+	<title>Automation and the Shell &middot; VulcanoSec Blog</title>
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" media="only screen and (min-width: 900px)" href="/blog/assets/css/desktop.css" />
+	<link rel="stylesheet" type="text/css" media="only screen and (max-width: 899px)" href="/blog/assets/css/mobile.css" />
+	<link href="/blog/assets/css/genericons.css" type="text/css" rel="stylesheet" />
+	<link href="/blog/assets/css/syntax.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Fenix:400,400italic">
+	<link rel="apple-touch-icon" href="http://vulcanosec.com/blog/assets/images/v-logo.png">
+	<link rel="shortcut icon" href="http://vulcanosec.com/blog/assets/images/favicon.ico">
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://vulcanosec.com/blog/atom.xml">
+	<script type="text/javascript" src="/blog/assets/js/jquery-2.1.0.min.js"></script>
+	
+	<script type="text/javascript" src="/blog/assets/js/jquery.stellar.min.js"></script>
+	
+	
+	<!-- Asynchronous Google Analytics snippet -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-45216258-2', 'auto');
+		ga('send', 'pageview');
+	</script>
+	
+	<!-- Theme Color for Chrome on Android Lollipop -->
+	<meta name="theme-color" content="#302F2D">
+</head>
+
+	<body>
+		<header class="clean" style="background-image: url(/blog/assets/article_images/2015-06-15-automation-and-the-shell/snail.m.jpeg); height: 100%; " data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
+	
+	<label class="menu" for="_1">
+	<span class="genericon genericon-menu"></span>
+</label>
+<input id="_1" type="checkbox">
+<div class="menu-content">
+	<p class="menu-title">VulcanoSec Blog<p>
+	<div class="menu" style="background-color: #1a1a1a; z-index: -1;"></div>
+	
+		<a href="/blog">Blog</a>
+	
+		<a href="/">Home</a>
+	
+	<hr>
+	<a href="https://twitter.com/vulcanosec" class="social-links-menu" target="_blank" title="Follow us on twitter"><span class="genericon genericon-twitter"></span></a><a href="https://github.com/vulcanosec" class="social-links-menu" target="_blank" title="Fork us on github"><span class="genericon genericon-github"></span></a><a href="http://vulcanosec.com/blog/atom.xml" class="social-links-menu" target="_blank" title="Subscribe to our feed"><span class="genericon genericon-feed"></span></a>
+</div>
+<div class="social-links" data-stellar-ratio="0.1">
+	
+		<a href="https://twitter.com/vulcanosec" target="_blank" title="Follow us on twitter"><span class="genericon genericon-twitter"></span></a>
+	
+		<a href="https://github.com/vulcanosec" target="_blank" title="Fork us on github"><span class="genericon genericon-github"></span></a>
+	
+		<a href="http://vulcanosec.com/blog/atom.xml" target="_blank" title="Subscribe to our feed"><span class="genericon genericon-feed"></span></a>
+	
+</div>
+
+	<div id="post-info" data-stellar-ratio="0.7">
+		<h1>Automation and the Shell</h1>
+		
+		<a class="site-title" href="https://twitter.com/arlimus"><div class="site-icon-small" style="background-image: url(https://avatars0.githubusercontent.com/u/1307529?s=400);"></div>Dominik Richter</a>, in 15 June 2015
+	</div>
+	
+	<div id="nav-icon" style="bottom: 30px;" data-stellar-ratio="4">
+		<a class="scroll" data-speed="500" href="#article"><span class="genericon genericon-expand"></span></a>
+	</div>
+</header>
+<div id="middle">
+	<div id="article">
+		<p>Managing your nodes has seen a wonderful change with the rise of DevOps and its newly found tools. Whether it’s written in Python or Ruby or runs on a custom language, we have come far from the olden days of shell-scripting your environment. Under the hood, however, in most cases, we are still true to our trusty shell. It may have become covered and deeply hidden in our modern automation languages, but it’s still there. At the end of the day, it is often the most convenient way to talk to your operating system.</p>
+
+<p>Security automation profits heavily from DevOps, while compliance scanning has not yet reached this field. Many people still rely on shell scripts (directly or through through commands run by a scanner) to cover this area. VulcanoSec is changing this field, and bringing the knowledge of development to security testing. Similar to DevOps tools, however, it uses the shell wherever convenient under the hood.</p>
+
+<p>As we will see in this article, there are many cases where this approach make our lives easier. In the end, it all boils down to command execution. We will take a look at the different styles of running commands on your nodes and the consequences they have.</p>
+
+<h2 id="remote-execution-case-1">Remote Execution (case 1)</h2>
+
+<p>This is probably one of the oldest cases for automating commands in your environment: A server delivers shell commands via (hopefully) secure channel to the node, which then executes them and reports back the results.</p>
+
+<p>For a simple example, take a server which connects to a client machine via SSH and runs some shell commands:</p>
+
+<p><code>
+pssh -h ips.txt -o /tmp/installs apt-get install apache2
+</code></p>
+
+<p>This will install Apache on all your Debian and Ubuntu nodes.</p>
+
+<p>There are some obvious limitations here, as our example shows. What about running this on RedHat, Fedora, SuSe, Windows? It won’t yield the desired results.</p>
+
+<p>However, these issues can be solved, if your server knows the target system and can adjust the command it will run. All you have to do, is to tell your server to install:</p>
+
+<p><code>
+package "apache"
+</code></p>
+
+<p>and it would run the appropriate command on each node:</p>
+
+<p><code>
+# for Ubuntu/Debian:
+apt-get install apache2
+# for RedHat/CentOS:
+yum install httpd
+...
+</code></p>
+
+<p>This method doesn’t require any additional component running on the client, except for a remote access with shell execution.</p>
+
+<h2 id="lokal-agent-case-2">Lokal Agent (case 2)</h2>
+
+<p>While the first method sends shell commands to the node, this approach instead creates and runs the commands on the target directly. Usually it involves installing an additional component on your clients, which is called the agent. It will end up running commands just once or regularly throughout its lifetime.</p>
+
+<p>Similar to the example above, the commands may be written in the targeted shell script directly (<code>apt-get install ...</code>), or may be embedded in a convenient language (<code>package 'apache'</code>). In any case, the common layer often translates them into shell commands, which are then executed.</p>
+
+<p>The source of these commands is also different. Depending on your needs, you may like to control all nodes from a central server. This would allow the agent to retrieve all commands it requires from the server and run them on the local node. Once again, it may retrieves raw shell commands from the server, or a script written in a different language which is then interpreted and translated on the node.</p>
+
+<p>The other approach is a standalone execution of commands. In this model, all commands are pre-installed with the agent and may be udpated by e.g. deployment scripts. In the end, the agent takes these commands, translates them if necessary, and executes everything on the node.</p>
+
+<h2 id="alternate-execution-case-3">Alternate execution (case 3)</h2>
+
+<p>Taking everything into account we have seen so far, we can mix and combine these solutions to achieve the right fit for our environment. As long as we are able to reach the shell, as a common layer of execution, we are likely able to alter the way in which commands are delivered and executed.</p>
+
+<p>Let’s construct a small example: We want to run a security check on a machine. Regularly we would use our server to log into the node and run all commands on the client’s shell (case 1). However, some machines may not grant such access. We can offer to install an agent instead, which gets its commands from a central server (case 2). But what if the client doesn’t want to install our agent? This may be the case for critical infrastructure, which must be treated carefully.</p>
+
+<p>In this case, we could just hand all shell-commands our server would transfer in case 1, and provide them to the client directly. As this is the least common layer, there is no installation of additional components on the client and the operator could retain full control over what is transferred to the server. If you look at it closely, however, this is just one variant of case 2: You use the client’s shell directly and run a different proxy for the work your agent would do. In principle, however, nothing changes.</p>
+
+<p>The real challenge of this case, is to provide the most common layer which requires the least adjustments over time.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Managing your nodes remotely has seen different mechanisms, often running on top of the operating system’s shell (or equivalent). These may provide their own language, to help operators focus on their goals instead of low-level issues.</p>
+
+<p>While many security professionals are still often scripting on the shell layer directly, there are solutions that take the power and simplicity from development and bringing it to the realm of security and compliance.</p>
+
+<p>At VulcanoSec, we provide a security and compliance scanner, that covers all three models seen above: Remote command execution, local agents, and an alternate execution layer. You can choose your favorite approach based on your environment and infrastructure requirements. If you are already familiar with DevOps solutions, you will feel right at home with this DevSec solution.</p>
+
+	</div>
+	
+	<div id="comments">
+		
+	
+	<script src="https://apis.google.com/js/plusone.js"></script>
+	<div id="g-comments" class="g-comments" data-href="http://vulcanosec.com/article/automation-and-the-shell" data-width="700" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD"></div>
+	<script>
+		var width = $('#comments').width() * 0.9;
+		width = Math.round(width);
+		$("#g-comments").attr({ "data-width": width });
+	</script>
+
+
+	</div>
+	
+	<div class="social center">
+		<div class="network">
+		<a class="hn-link" href="javascript:window.location=%22http://news.ycombinator.com/submitlink?u=%22+encodeURIComponent(document.location)+%22&amp;t=%22+encodeURIComponent(document.title)">Discuss on Hacker News</a>
+		</div>
+		<div class="network twitter">
+		<a href="https://twitter.com/share" class="twitter-share-button" data-via="vulcanosec" data-count="none">Tweet</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+		</div>
+	</div>
+</div>
+
+	
+		
+		
+		
+		
+		
+		
+	
+
+
+<footer class="clean" style="background-image: url(/blog/blog/assets/article_images/2015-03-01-npm-dependency/airplane-crash.jpg); height: 75%; min-height: 500px; " data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50" data-stellar-vertical-offset="50">
+	<div id="nav-icon" style="top: 60px;" data-stellar-ratio="0.8">
+		<a class="scroll" data-speed="500" href="#article"><span class="genericon genericon-collapse"></span></a>
+	</div>
+	<div id="post-info" data-stellar-ratio="0.5" data-stellar-vertical-offset="120">
+		<h3>Featured post</h3>
+		<a href="/blog/article/npm-dependency">
+			<h1>`npm install` could be dangerous</h1>
+			
+				<h2></h2>
+			
+		</a>
+	</div>
+	<p class="copyright">&copy;2015, <a href="http://vulcanosec.com" target="_blank">VulcanoSec</a>. All rights reserved.</p>
+</footer>
+<script src="/blog/assets/js/smooth-scroll.js"></script>
+
+		<script>
+		var width = $(window).width()
+		if ( width > 899 )
+		$( function(){
+			$.stellar({
+				responsive: true,
+			verticalScrolling: true,
+			horizontalOffset: 0,
+			verticalOffset: 0,
+			positionProperty: 'transform',
+			});
+		});
+		</script>
+	</body>
+</html>
