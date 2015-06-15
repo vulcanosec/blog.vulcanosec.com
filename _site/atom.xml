@@ -634,9 +634,8 @@ limitations under the License.&lt;/p&gt;
 
 &lt;p&gt;For a simple example, take a server which connects to a client machine via SSH and runs some shell commands:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
-pssh -h ips.txt -o /tmp/installs apt-get install apache2
-&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pssh -h ips.txt -o /tmp/installs apt-get install apache2
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;This will install Apache on all your Debian and Ubuntu nodes.&lt;/p&gt;
 
@@ -644,19 +643,19 @@ pssh -h ips.txt -o /tmp/installs apt-get install apache2
 
 &lt;p&gt;However, these issues can be solved, if your server knows the target system and can adjust the command it will run. All you have to do, is to tell your server to install:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
-package &quot;apache&quot;
-&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;package &quot;apache&quot;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;and it would run the appropriate command on each node:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
-# for Ubuntu/Debian:
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;# for Ubuntu/Debian:
 apt-get install apache2
+
 # for RedHat/CentOS:
 yum install httpd
+
 ...
-&lt;/code&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;This method doesn’t require any additional component running on the client, except for a remote access with shell execution.&lt;/p&gt;
 

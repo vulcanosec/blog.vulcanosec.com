@@ -25,9 +25,9 @@ This is probably one of the oldest cases for automating commands in your environ
 
 For a simple example, take a server which connects to a client machine via SSH and runs some shell commands:
 
-```
-pssh -h ips.txt -o /tmp/installs apt-get install apache2
-```
+<pre><code class="bash"
+>pssh -h ips.txt -o /tmp/installs apt-get install apache2
+</code></pre>
 
 This will install Apache on all your Debian and Ubuntu nodes.
 
@@ -35,19 +35,21 @@ There are some obvious limitations here, as our example shows. What about runnin
 
 However, these issues can be solved, if your server knows the target system and can adjust the command it will run. All you have to do, is to tell your server to install:
 
-```
-package "apache"
-```
+<pre><code class="ruby"
+>package "apache"
+</code></pre>
 
 and it would run the appropriate command on each node:
 
-```
-# for Ubuntu/Debian:
+<pre><code class="bash"
+># for Ubuntu/Debian:
 apt-get install apache2
+
 # for RedHat/CentOS:
 yum install httpd
+
 ...
-```
+</code></pre>
 
 This method doesn't require any additional component running on the client, except for a remote access with shell execution.
 

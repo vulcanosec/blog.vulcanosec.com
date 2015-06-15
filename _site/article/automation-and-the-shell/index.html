@@ -45,6 +45,9 @@
 	<meta name="theme-color" content="#302F2D">
 </head>
 
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
 	<body>
 		<header class="clean" style="background-image: url(//assets/article_images/2015-06-15-automation-and-the-shell/snail.m.jpeg); height: 100%; " data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
 
@@ -97,9 +100,8 @@
 
 <p>For a simple example, take a server which connects to a client machine via SSH and runs some shell commands:</p>
 
-<p><code>
-pssh -h ips.txt -o /tmp/installs apt-get install apache2
-</code></p>
+<pre><code class="bash">pssh -h ips.txt -o /tmp/installs apt-get install apache2
+</code></pre>
 
 <p>This will install Apache on all your Debian and Ubuntu nodes.</p>
 
@@ -107,19 +109,19 @@ pssh -h ips.txt -o /tmp/installs apt-get install apache2
 
 <p>However, these issues can be solved, if your server knows the target system and can adjust the command it will run. All you have to do, is to tell your server to install:</p>
 
-<p><code>
-package "apache"
-</code></p>
+<pre><code class="ruby">package "apache"
+</code></pre>
 
 <p>and it would run the appropriate command on each node:</p>
 
-<p><code>
-# for Ubuntu/Debian:
+<pre><code class="bash"># for Ubuntu/Debian:
 apt-get install apache2
+
 # for RedHat/CentOS:
 yum install httpd
+
 ...
-</code></p>
+</code></pre>
 
 <p>This method doesn’t require any additional component running on the client, except for a remote access with shell execution.</p>
 
