@@ -7,8 +7,8 @@ permalink:	/article/:title
 title:            VulcanoSec Blog
 tagline:          'blog'
 description:      'VulcanoSec Blog'
-url:              http://vulcanosec.com
-baseurl:          /blog
+url:              http://blog.vulcanosec.com
+baseurl:          /
 commentsystem:    google
 disqus:           example
 
@@ -32,15 +32,15 @@ social:
     desc:         Fork us on github
 
   - icon:         feed
-    url:          http://vulcanosec.com/blog/atom.xml
+    url:          http://blog.vulcanosec.com/atom.xml
     desc:         Subscribe to our feed
 
 menu:
   - title:        Blog
-    url:          /blog
+    url:          /
 
   - title:        Home
-    url:          /
+    url:          http://vulcanosec.com
 
 copyright:
   author:         VulcanoSec
