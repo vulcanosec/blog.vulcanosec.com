@@ -8,7 +8,7 @@ title:            VulcanoSec Blog
 tagline:          'blog'
 description:      'VulcanoSec Blog'
 url:              http://blog.vulcanosec.com
-baseurl:          /
+baseurl:          ''
 commentsystem:    google
 disqus:           example
 

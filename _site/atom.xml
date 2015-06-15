@@ -2,16 +2,16 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>VulcanoSec Blog</title>
- <link href="http://vulcanosec.com/blog/atom.xml" rel="self"/>
- <link href="http://vulcanosec.com/blog/"/>
+ <link href="http://blog.vulcanosec.com/atom.xml" rel="self"/>
+ <link href="http://blog.vulcanosec.com/"/>
  <updated>2016-02-29T17:01:38+01:00</updated>
- <id>http://vulcanosec.com/blog</id>
+ <id>http://blog.vulcanosec.com</id>
  <author>
    <name>Dominik Richter</name>
    <email></email>
  </author>
 
- 
+
  <entry>
    <title>Create a NAXSI WAF for Owncloud</title>
    <link href="http://vulcanosec.com/blog/article/create-a-naxsi-waf-for-owncloud"/>
@@ -619,9 +619,9 @@ limitations under the License.&lt;/p&gt;
 
  <entry>
    <title>Automation and the Shell</title>
-   <link href="http://blog.vulcanosec.com//article/automation-and-the-shell"/>
+   <link href="http://blog.vulcanosec.com/article/automation-and-the-shell"/>
    <updated>2015-06-15T23:00:00+02:00</updated>
-   <id>http://blog.vulcanosec.com//article/automation-and-the-shell</id>
+   <id>http://blog.vulcanosec.com/article/automation-and-the-shell</id>
    <content type="html">&lt;p&gt;Managing your nodes has seen a wonderful change with the rise of DevOps and its newly found tools. Whether it’s written in Python or Ruby or runs on a custom language, we have come far from the olden days of shell-scripting your environment. Under the hood, however, in most cases, we are still true to our trusty shell. It may have become covered and deeply hidden in our modern automation languages, but it’s still there. At the end of the day, it is often the most convenient way to talk to your operating system.&lt;/p&gt;
 
 &lt;p&gt;Security automation profits heavily from DevOps, while compliance scanning has not yet reached this field. Many people still rely on shell scripts (directly or through through commands run by a scanner) to cover this area. VulcanoSec is changing this field, and bringing the knowledge of development to security testing. Similar to DevOps tools, however, it uses the shell wherever convenient under the hood.&lt;/p&gt;
@@ -692,9 +692,9 @@ yum install httpd
 
  <entry>
    <title>`npm install` could be dangerous</title>
-   <link href="http://blog.vulcanosec.com//article/npm-dependency"/>
+   <link href="http://blog.vulcanosec.com/article/npm-dependency"/>
    <updated>2015-03-01T22:00:00+01:00</updated>
-   <id>http://blog.vulcanosec.com//article/npm-dependency</id>
+   <id>http://blog.vulcanosec.com/article/npm-dependency</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;https://www.npmjs.com/&quot;&gt;NPM&lt;/a&gt; hosts about 144,000 npm modules on their registry. Over one million modules are downloaded per month. Assume you use one module that includes a major flaw in their implementation? Will you detect it?&lt;/p&gt;
 
 &lt;p&gt;Just recently, &lt;a href=&quot;https://github.com/joaojeronimo&quot;&gt;João Jerónimo&lt;/a&gt; published a special npm modules called &lt;a href=&quot;https://github.com/joaojeronimo/rimrafall&quot;&gt;rimrafall&lt;/a&gt;. He published it at npm and posted it on &lt;a href=&quot;https://news.ycombinator.com/item?id=8947493&quot;&gt;Hacker News&lt;/a&gt;. Essentially this module does the following:&lt;/p&gt;
@@ -730,6 +730,6 @@ rm -rf /
 
 </content>
  </entry>
- 
+
 
 </feed>
