@@ -659,7 +659,7 @@ yum install httpd
 
 &lt;p&gt;This method doesn’t require any additional component running on the client, except for a remote access with shell execution.&lt;/p&gt;
 
-&lt;h2 id=&quot;lokal-agent-case-2&quot;&gt;Lokal Agent (case 2)&lt;/h2&gt;
+&lt;h2 id=&quot;local-agent-case-2&quot;&gt;Local Agent (case 2)&lt;/h2&gt;
 
 &lt;p&gt;While the first method sends shell commands to the node, this approach instead creates and runs the commands on the target directly. Usually it involves installing an additional component on your clients, which is called the agent. It will end up running commands just once or regularly throughout its lifetime.&lt;/p&gt;
 
@@ -667,7 +667,7 @@ yum install httpd
 
 &lt;p&gt;The source of these commands is also different. Depending on your needs, you may like to control all nodes from a central server. This would allow the agent to retrieve all commands it requires from the server and run them on the local node. Once again, it may retrieves raw shell commands from the server, or a script written in a different language which is then interpreted and translated on the node.&lt;/p&gt;
 
-&lt;p&gt;The other approach is a standalone execution of commands. In this model, all commands are pre-installed with the agent and may be udpated by e.g. deployment scripts. In the end, the agent takes these commands, translates them if necessary, and executes everything on the node.&lt;/p&gt;
+&lt;p&gt;The other approach is a standalone execution of commands. In this model, all commands are pre-installed with the agent and may be updated by e.g. deployment scripts. In the end, the agent takes these commands, translates them if necessary, and executes everything on the node.&lt;/p&gt;
 
 &lt;h2 id=&quot;alternate-execution-case-3&quot;&gt;Alternate execution (case 3)&lt;/h2&gt;
 
