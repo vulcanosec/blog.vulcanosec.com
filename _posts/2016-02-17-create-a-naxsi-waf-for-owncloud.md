@@ -1,7 +1,16 @@
 ---
+layout: post
 title: "Create a NAXSI WAF for Owncloud"
 date:   2016-02-17 19:00:00
-author: "Patrick Münch"
+image:
+    url: /assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/cover.jpeg
+video: false
+comments: true
+theme_color: 302F2D
+
+author: 'Patrick Münch'
+author_image: "https://avatars0.githubusercontent.com/u/7220740?s=400"
+author_link: "https://twitter.com/atomiczero111"
 ---
 
 # Introduction
@@ -16,13 +25,13 @@ NAXSI can be operated in two different modes: Live or learning. Some application
 
 This article explains how to create a WAF for owncloud. Both the application as well as the WAF are completely deployed with docker containers. The following picture shows the application design:
 
-![Application Design](design.png)
+![Application Design](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/design.png)
 
 # Description of NAXSI Approach
 
 NAXSI stands for "Nginx Anti Xss & Sql Injection". NAXSI WAF detects unexpected characters in HTTP requests/arguments and blocks these. It prevents an attacker from leveraging web vulnerabilities of a site, no matter in which language the website is developed. It protects the website from the [TOP 10 OWASP threats](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project).
 
-![Principle](principle.png)
+![Principle](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/principle.png)
 
 The NXTOOL is helpful for the learning process. It writes all NAXSI events to elasticsearch. It also generates the whitelist.
 
@@ -36,7 +45,7 @@ NAXSI rules have a straightforward design: They consit of three basic types of r
 
 MainRule is an identifier which marks detection-rules, unlike BasicRules, which are usually used to whitelist certain MainRules.
 
-![MainRule](mainrule.png)
+![MainRule](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/mainrule.png)
 
 ### Match Pattern
 
@@ -69,7 +78,7 @@ Further reading: [rules syntax](https://github.com/nbs-system/naxsi/wiki/rulessy
 
 Basic Rules are used to create whitelists
 
-![MainRule](basicrule.png)
+![BasicRule](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/basicrule.png)
 
 ### Whitelist
 
