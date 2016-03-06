@@ -25,13 +25,13 @@ NAXSI can be operated in two different modes: Live or learning. Some application
 
 This article explains how to create a WAF for owncloud. Both the application as well as the WAF are completely deployed with docker containers. The following picture shows the application design:
 
-![Application Design](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/design.png)
+![Application Design](/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/design.png)
 
 # Description of NAXSI Approach
 
 NAXSI stands for "Nginx Anti Xss & Sql Injection". NAXSI WAF detects unexpected characters in HTTP requests/arguments and blocks these. It prevents an attacker from leveraging web vulnerabilities of a site, no matter in which language the website is developed. It protects the website from the [TOP 10 OWASP threats](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project).
 
-![Principle](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/principle.png)
+![Principle](/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/principle.png)
 
 The NXTOOL is helpful for the learning process. It writes all NAXSI events to elasticsearch. It also generates the whitelist.
 
@@ -45,7 +45,7 @@ NAXSI rules have a straightforward design: They consit of three basic types of r
 
 MainRule is an identifier which marks detection-rules, unlike BasicRules, which are usually used to whitelist certain MainRules.
 
-![MainRule](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/mainrule.png)
+![MainRule](/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/mainrule.png)
 
 ### Match Pattern
 
@@ -78,7 +78,7 @@ Further reading: [rules syntax](https://github.com/nbs-system/naxsi/wiki/rulessy
 
 Basic Rules are used to create whitelists
 
-![BasicRule](http://blog.vulcanosec.com/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/basicrule.png)
+![BasicRule](/assets/article_images/2016-02-17-create-a-naxsi-waf-for-owncloud/basicrule.png)
 
 ### Whitelist
 
@@ -98,14 +98,14 @@ The `start.sh` also creates the image and container for the NAXSI WAF. The conta
 
 After the execution of `start.sh` it should look like this.
 
-```bash
+<pre><code class="bash">
 ∅> docker ps --format "table {{.Names}}:\t{{.Ports}}"
 NAMES                PORTS
 owncloud-naxsi:      0.0.0.0:443->443/tcp
 elasticsearch:       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
 owncloud-nginx:      80/tcp
 owncloud-postgres:   5432/tcp
-```
+</code></pre>
 
 ## Create the first NAXSI rule
 
@@ -113,14 +113,14 @@ Now the application is started and we have to browse the website to generate dat
 
 To log into the WAF, run `docker exec -it owncloud-naxsi bash` and add a nxapi index to the elasticsearch database with the following command:
 
-```bash
+<pre><code class="bash">
 curl -XPUT 'http://elasticsearch:9200/nxapi/'
 {"acknowledged":true}
-```
+</code></pre>
 
 Next, we need to load the data from the log file into ElasticSearch with the following command:
 
-```bash
+<pre><code class="bash">
 nxtool.py -c /etc/nginx/nxapi.json --files=/var/log/nginx/naxsi_error.log
 # size :1000
 WARNING:root:List of files :['/var/log/nginx/naxsi_error.log']
@@ -133,11 +133,11 @@ log open
 {'date': '2016-02-16T14:52:22+00', 'events': [{'zone': 'HEADERS', 'ip': '127.0.0.1', 'uri': '/index.php/heartbeat', 'server': '127.0.0.1', 'content': '', 'var_name': 'cookie', 'coords': [104.195397, 35.86166], 'country': 'CN', 'date': '2016-02-16T14:52:22+00', 'id': '1315'}, {'zone': 'BODY', 'ip': '127.0.0.1', 'uri': '/index.php/heartbeat', 'server': '127.0.0.1', 'content': '', 'var_name': '', 'coords': [104.195397, 35.86166], 'country': 'CN', 'date': '2016-02-16T14:52:22+00', 'id': '16'}]}
 Written 710 events
 root@18cecd3232a2:/opt#
-```
+</code></pre>
 
-The following command displays the top servers which raised the most exceptions. Also the top URIs and zones which raised exceptions are shown. We need the URI list to generate the whitelists for specific requests.  
+The following command displays the top servers which raised the most exceptions. Also the top URIs and zones which raised exceptions are shown. We need the URI list to generate the whitelists for specific requests.
 
-```bash
+<pre><code class="bash">
 nxtool.py -x -c /etc/nginx/nxapi.json
 # size :1000
 # Whitelist(ing) ratio :
@@ -164,11 +164,11 @@ nxtool.py -x -c /etc/nginx/nxapi.json
 # Top Peer(s) :
 # 127.0.0.1 100.0% (total:710/710)
 root@18cecd3232a2:/opt#
-```
+</code></pre>
 
 Now generate a whitelist for the first URI and save the `BasicRule  wl:1315 "mz:$HEADERS_VAR:cookie";` in the `naxsi_whitelist.rules` file.
 
-```bash
+<pre><code class="bash">
 nxtool.py -c /etc/nginx/nxapi.json -s 127.0.0.1 -f --filter 'uri /core/img/breadcrumb.svg' --slack
 # size :1000
 #  template :/usr/local/nxapi/tpl/HEADERS/cookies.tpl
@@ -209,15 +209,16 @@ Nb of hits : 0
 #  template :/usr/local/nxapi/tpl/URI/site-wide-id.tpl
 Nb of hits : 0
 root@18cecd3232a2:/opt#
-```
-```bash
-echo "BasicRule  wl:1315 \"mz:\$HEADERS_VAR:cookie\";" > /etc/nginx/naxsi_whitelist.rules  
-```
+</code></pre>
+
+<pre><code class="bash">
+echo "BasicRule  wl:1315 \"mz:\$HEADERS_VAR:cookie\";" > /etc/nginx/naxsi_whitelist.rules
+</code></pre>
 
 Now tag the request with the corresponding rule inside elasticsearch.
 
-```bash
-nxtool.py -c /etc/nginx/nxapi.json -s 127.0.0.1 -w /etc/nginx/naxsi_whitelist.rules --tag         
+<pre><code class="bash">
+nxtool.py -c /etc/nginx/nxapi.json -s 127.0.0.1 -w /etc/nginx/naxsi_whitelist.rules --tag
 # size :1000
 #Loading tpl '/etc/nginx/naxsi_whitelist.rules'
 TAG RULE :{'query': {'bool': {'must': [{'match': {'id': '1315'}},
@@ -309,12 +310,12 @@ TAG RULE :{'from': 0,
 0 items to be tagged ...
 
 5600 items tagged ...
-```
+</code></pre>
 
 When you look to the report again, it will confirm, that the number of requests decreased
 
-```bash
-nxtool.py -x -c /etc/nginx/nxapi.json -s 127.0.0.1                                       
+<pre><code class="bash">
+nxtool.py -x -c /etc/nginx/nxapi.json -s 127.0.0.1
 # size :1000
 # Whitelist(ing) ratio :
 # Top servers :
@@ -339,11 +340,11 @@ nxtool.py -x -c /etc/nginx/nxapi.json -s 127.0.0.1
 # ARGS|NAME 6.13% (total:26/424)
 # Top Peer(s) :
 # 127.0.0.1 100.0% (total:424/424)
-```
+</code></pre>
 
 ## Create the second NAXSI rule
 
-```bash
+<pre><code class="bash">
 nxtool.py -c /etc/nginx/nxapi.json -s 127.0.0.1 -f --filter 'uri /index.php/apps/files/ajax/upload.php' --slack
 # size :1000
 #  template :/usr/local/nxapi/tpl/HEADERS/cookies.tpl
@@ -411,20 +412,20 @@ Nb of hits : 0
 #  template :/usr/local/nxapi/tpl/URI/site-wide-id.tpl
 Nb of hits : 0
 root@18cecd3232a2:/opt#
-```
+</code></pre>
 
 NXTOOL creates some rules for the same URI. The Main rule 2 protects against request which are to big and won´t be parsed. If we choose the `BasicRule  wl:2 "mz:BODY";`, we would allow for big requests on all URIs. That is not what we want. Instead, I recommend the `BasicRule  wl:2 "mz:$URL:/index.php/apps/files/ajax/upload.php|BODY";` because this rules allows only big requests for a specific URI.
 
 Save the rule in the `naxsi_whitelist.rules`.
 
-```bash
+<pre><code class="bash">
 echo "BasicRule  wl:2 \"mz:\$URL:/index.php/apps/files/ajax/upload.php\|BODY\";" >> /etc/nginx/naxsi_whitelist.rules
-```
+</code></pre>
 
 Tag the request with the corresponding rule within elasticsearch.
 
-```bash
-nxtool.py -c /etc/nginx/nxapi.json -s 127.0.0.1 -w /etc/nginx/naxsi_whitelist.rules --tag                          
+<pre><code class="bash">
+nxtool.py -c /etc/nginx/nxapi.json -s 127.0.0.1 -w /etc/nginx/naxsi_whitelist.rules --tag
 # size :1000
 #Loading tpl '/etc/nginx/naxsi_whitelist.rules'
 TAG RULE :{'query': {'bool': {'must': [{'match': {'id': '1315'}},
@@ -465,11 +466,11 @@ TAG RULE :{'from': 0,
 
 88 items tagged ...
 root@18cecd3232a2:/opt#
-```
+</code></pre>
 
 Repeat these steps for all other requests until you get a complete whitelist similar to this:
 
-```
+<pre><code class="bash">
 BasicRule  wl:1000 "mz:$URL:/apps/activity/img/delete-color.svg|URL";
 BasicRule  wl:1000 "mz:$URL:/apps/files/img/delete.svg|URL";
 BasicRule  wl:1000 "mz:$URL:/apps/updater/css/updater.css|URL";
@@ -521,7 +522,7 @@ BasicRule  wl:1001,1009,1010,1011,1310,1311 "mz:$URL:/index.php/settings/persona
 BasicRule  wl:1001,1009,1010,1011,1310,1311 "mz:$URL:/index.php/settings/personal/changepassword|$BODY_VAR:personal-password-clone";
 BasicRule  wl:1001,1009,1010,1011,1310,1311 "mz:$URL:/index.php/settings/users/users|$BODY_VAR:password";
 BasicRule  wl:1001,1009,1010,1011,1310,1311 "mz:$URL:/|$BODY_VAR:password";
-BasicRule  wl:1302,1303 "mz:$URL:/index.php/apps/files/api/v1/tags/_$!<Favorite>!$_/files|URL";
+BasicRule  wl:1302,1303 "mz:$URL:/index.php/apps/files/api/v1/tags/_$!&lt;Favorite&gt;!$_/files|URL";
 BasicRule  wl:1310,1311 "mz:$URL:/index.php/avatar/cropped|BODY|NAME";
 BasicRule  wl:1310,1311 "mz:$URL:/index.php/core/ajax/share.php|ARGS|NAME";
 BasicRule  wl:1310,1311 "mz:$URL:/index.php/core/ajax/share.php|BODY|NAME";
@@ -533,11 +534,11 @@ BasicRule  wl:16 "mz:$URL:/index.php/heartbeat|BODY";
 BasicRule  wl:2 "mz:$URL:/index.php/apps/files/ajax/upload.php|BODY";
 BasicRule  wl:2 "mz:$URL:/index.php/avatar/|BODY";
 BasicRule wl:17 "mz:$URL_X:/remote.php/webdav|$HEADERS_VAR:Accept"; #wl libinjection_sql on header
-```
+</code></pre>
 
 Save this whitelist to `waf/naxsi_whitelist.rules` in the project's folder. Change the `create_start.sh` to disable learning mode of NAXSI and switch over to LIVE mode.
 
-```bash
+<pre><code class="bash">
 #!/bin/bash
 
 # to create naxsi rules
@@ -547,7 +548,7 @@ Save this whitelist to `waf/naxsi_whitelist.rules` in the project's folder. Chan
 # productiv
 docker create --name owncloud-naxsi -e PROXY_REDIRECT_IP=owncloud --link owncloud-nginx:owncloud -p 443:443 owncloud-naxsi
 docker start owncloud-naxsi
-```
+</code></pre>
 
 Change into the `waf` folder and run `./build-image.sh` to create a new image which includes the new `naxsi_whitelist.rules`. Start it via `./create_start.sh`
 
@@ -555,15 +556,15 @@ Change into the `waf` folder and run `./build-image.sh` to create a new image wh
 
 Watch the log file from the `owncloud-naxsi` docker container.
 
-```bash
+<pre><code class="bash">
 ∅> docker exec -it owncloud-naxsi tail -f /var/log/nginx/naxsi_error.log
-```
+</code></pre>
 
 Go to the owncloud login page and put `user’ or 1=1;#` as username and password in the fields. Now you should see an error message in the NAXSI log file.
 
-```bash
+<pre><code class="bash">
 2016/02/17 11:58:20 [error] 14#0: *1965 NAXSI_FMT: ip=127.0.0.1&server=127.0.0.1&uri=/&learning=0&vers=0.54&total_processed=499&total_blocked=8&block=1&cscore0=$SQL&score0=4&cscore1=$XSS&score1=8&zone0=BODY&id0=1008&var_name0=user, client: 127.0.0.1, server: owncloud_naxsi, request: "POST / HTTP/1.0", host: "127.0.0.1:8080"
-```
+</code></pre>
 
 **It's working. Have FUN!!!**
 
@@ -596,7 +597,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
