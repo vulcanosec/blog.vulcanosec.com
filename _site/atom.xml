@@ -4,7 +4,7 @@
  <title>VulcanoSec Blog</title>
  <link href="http://vulcanosec.com/blog/atom.xml" rel="self"/>
  <link href="http://vulcanosec.com/blog/"/>
- <updated>2016-02-29T17:01:38+01:00</updated>
+ <updated>2016-03-30T11:39:59+02:00</updated>
  <id>http://vulcanosec.com/blog</id>
  <author>
    <name>Dominik Richter</name>
@@ -98,7 +98,7 @@
 
 &lt;h1 id=&quot;start-the-owncloud-and-create-naxsi-rules&quot;&gt;Start the owncloud and create NAXSI rules&lt;/h1&gt;
 
-&lt;p&gt;First, we need to download the Project from &lt;a href=&quot;https://github.com/atomic111/example-NAXSI-owncloud.git&quot;&gt;github&lt;/a&gt; and just execute the &lt;code&gt;start.sh&lt;/code&gt; bash script. It creates the data volume container for the Postgres database and for the Owncloud application. It also creates the Postgres container with default user/passwords (user=postgres and empty password) and creates Owncloud itself with the default user/password (user = admin, password = admin). &lt;strong&gt;Not a good security practice. Sorry.&lt;/strong&gt; Let’s focus on creating the WAF for owncloud.&lt;/p&gt;
+&lt;p&gt;First, we need to install docker and docker-compose. Then download the Project from &lt;a href=&quot;https://github.com/atomic111/example-NAXSI-owncloud.git&quot;&gt;github&lt;/a&gt; and just execute the &lt;code&gt;start.sh&lt;/code&gt; bash script. It creates the data volume container for the Postgres database and for the Owncloud application. It also creates the Postgres container with default user/passwords (user=postgres and empty password) and creates Owncloud itself with the default user/password (user = admin, password = admin). &lt;strong&gt;Not a good security practice. Sorry.&lt;/strong&gt; Let’s focus on creating the WAF for owncloud.&lt;/p&gt;
 
 &lt;p&gt;The &lt;code&gt;start.sh&lt;/code&gt; also creates the image and container for the NAXSI WAF. The container starts the WAF in LEARNING MODE and elasticsearch to store NAXSI events.&lt;/p&gt;
 
@@ -106,18 +106,18 @@
 
 &lt;p&gt;&lt;code&gt;bash
 ∅&amp;gt; docker ps --format &quot;table :\t&quot;
-NAMES                PORTS
-owncloud-naxsi:      0.0.0.0:443-&amp;gt;443/tcp
-elasticsearch:       0.0.0.0:9200-&amp;gt;9200/tcp, 0.0.0.0:9300-&amp;gt;9300/tcp
-owncloud-nginx:      80/tcp
-owncloud-postgres:   5432/tcp
+NAMES                       PORTS
+owncloud_waf_1:             0.0.0.0:443-&amp;gt;443/tcp
+owncloud_app_1:             80/tcp
+owncloud_postgres_1:        5432/tcp
+owncloud_elasticsearch_1:   9200/tcp, 9300/tcp
 &lt;/code&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;create-the-first-naxsi-rule&quot;&gt;Create the first NAXSI rule&lt;/h2&gt;
 
 &lt;p&gt;Now the application is started and we have to browse the website to generate data in the logfile (&lt;code&gt;/var/log/nginx/naxsi_error.log&lt;/code&gt;). Log into owncloud via your browser (&lt;code&gt;https://127.0.0.1&lt;/code&gt;), upload a few pictures, create a folder, add a user, delete a file, delete a user, delete a group and click around. Create a lot of different events to prevent false-positives later on.&lt;/p&gt;
 
-&lt;p&gt;To log into the WAF, run &lt;code&gt;docker exec -it owncloud-naxsi bash&lt;/code&gt; and add a nxapi index to the elasticsearch database with the following command:&lt;/p&gt;
+&lt;p&gt;To log into the WAF, run &lt;code&gt;docker exec -it owncloud_waf_1 bash&lt;/code&gt; and add a nxapi index to the elasticsearch database with the following command:&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;bash
 curl -XPUT &#39;http://elasticsearch:9200/nxapi/&#39;
@@ -522,6 +522,8 @@ BasicRule  wl:1008 &quot;mz:$URL:/index.php/apps/gallery/thumbnails|$ARGS_VAR:id
 BasicRule  wl:1008 &quot;mz:$URL:/index.php/apps/galleryplus/files/list|$ARGS_VAR:mediatypes&quot;;
 BasicRule  wl:1008 &quot;mz:$URL:/index.php/apps/galleryplus/thumbnails|$ARGS_VAR:ids&quot;;
 BasicRule  wl:1009 &quot;mz:$URL:/index.php/apps/files_pdfviewer/|$ARGS_VAR:file&quot;;
+BasicRule  wl:1009 &quot;mz:$URL:/|$BODY_VAR:requesttoken&quot;;
+BasicRule  wl:1009 &quot;mz:$URL:/index.php|$ARGS_VAR:requesttoken&quot;;
 BasicRule  wl:1001,1009,1010,1011,1310,1311 &quot;mz:$URL:/index.php/settings/personal/changepassword|$BODY_VAR:oldpassword&quot;;
 BasicRule  wl:1001,1009,1010,1011,1310,1311 &quot;mz:$URL:/index.php/settings/personal/changepassword|$BODY_VAR:personal-password&quot;;
 BasicRule  wl:1001,1009,1010,1011,1310,1311 &quot;mz:$URL:/index.php/settings/personal/changepassword|$BODY_VAR:personal-password-clone&quot;;
@@ -539,36 +541,42 @@ BasicRule  wl:16 &quot;mz:$URL:/index.php/heartbeat|BODY&quot;;
 BasicRule  wl:2 &quot;mz:$URL:/index.php/apps/files/ajax/upload.php|BODY&quot;;
 BasicRule  wl:2 &quot;mz:$URL:/index.php/avatar/|BODY&quot;;
 BasicRule wl:17 &quot;mz:$URL_X:/remote.php/webdav|$HEADERS_VAR:Accept&quot;; #wl libinjection_sql on header
+&lt;/code&gt;
+Save this whitelist to &lt;code&gt;waf/naxsi_whitelist.rules&lt;/code&gt; in the project’s folder. Change the &lt;code&gt;docker-compose.yml&lt;/code&gt; to disable learning mode of NAXSI and switch over to LIVE mode.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;bash
+waf:
+    build: ./waf
+    depends_on:
+      - app
+      - elasticsearch
+    links:
+      - app:owncloud
+      - elasticsearch:elasticsearch
+    environment:
+      - LEARNING_MODE=no
+      - PROXY_REDIRECT_IP=owncloud
+    ports:
+      - &quot;443:443&quot;
+    networks:
+      - frontend
+      - backend_app
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;Save this whitelist to &lt;code&gt;waf/naxsi_whitelist.rules&lt;/code&gt; in the project’s folder. Change the &lt;code&gt;create_start.sh&lt;/code&gt; to disable learning mode of NAXSI and switch over to LIVE mode.&lt;/p&gt;
-
-&lt;p&gt;```bash
-#!/bin/bash&lt;/p&gt;
-
-&lt;h1 id=&quot;to-create-naxsi-rules&quot;&gt;to create naxsi rules&lt;/h1&gt;
-&lt;p&gt;#docker run –name elasticsearch -p 9200:9200 -p 9300:9300 -d elasticsearch elasticsearch -Des.network.host=0.0.0.0
-#docker create –name owncloud-naxsi -e PROXY_REDIRECT_IP=owncloud -e LEARNING_MODE=yes –link owncloud-nginx:owncloud –link elasticsearch:elasticsearch -p 443:443 owncloud-naxsi&lt;/p&gt;
-
-&lt;h1 id=&quot;productiv&quot;&gt;productiv&lt;/h1&gt;
-&lt;p&gt;docker create –name owncloud-naxsi -e PROXY_REDIRECT_IP=owncloud –link owncloud-nginx:owncloud -p 443:443 owncloud-naxsi
-docker start owncloud-naxsi
-```&lt;/p&gt;
-
-&lt;p&gt;Change into the &lt;code&gt;waf&lt;/code&gt; folder and run &lt;code&gt;./build-image.sh&lt;/code&gt; to create a new image which includes the new &lt;code&gt;naxsi_whitelist.rules&lt;/code&gt;. Start it via &lt;code&gt;./create_start.sh&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Run &lt;code&gt;docker rm -f owncloud_waf_1&lt;/code&gt; to shutdown and remove the running WAF container. Execute &lt;code&gt;docker-compose -p owncloud build&lt;/code&gt; to create a new image which includes the new &lt;code&gt;naxsi_whitelist.rules&lt;/code&gt;. Start it via &lt;code&gt;docker-compose -p owncloud up -d&lt;/code&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;test-the-naxsi-waf&quot;&gt;Test the NAXSI WAF&lt;/h2&gt;
 
-&lt;p&gt;Watch the log file from the &lt;code&gt;owncloud-naxsi&lt;/code&gt; docker container.&lt;/p&gt;
+&lt;p&gt;Watch the log file from the &lt;code&gt;owncloud_waf_1&lt;/code&gt; docker container.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;bash
-∅&amp;gt; docker exec -it owncloud-naxsi tail -f /var/log/nginx/naxsi_error.log
+∅&amp;gt; docker exec -it owncloud_waf_1 tail -f /var/log/nginx/naxsi_error.log
 &lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Go to the owncloud login page and put &lt;code&gt;user’ or 1=1;#&lt;/code&gt; as username and password in the fields. Now you should see an error message in the NAXSI log file.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;bash
-2016/02/17 11:58:20 [error] 14#0: *1965 NAXSI_FMT: ip=127.0.0.1&amp;amp;server=127.0.0.1&amp;amp;uri=/&amp;amp;learning=0&amp;amp;vers=0.54&amp;amp;total_processed=499&amp;amp;total_blocked=8&amp;amp;block=1&amp;amp;cscore0=$SQL&amp;amp;score0=4&amp;amp;cscore1=$XSS&amp;amp;score1=8&amp;amp;zone0=BODY&amp;amp;id0=1008&amp;amp;var_name0=user, client: 127.0.0.1, server: owncloud_naxsi, request: &quot;POST / HTTP/1.0&quot;, host: &quot;127.0.0.1:8080&quot;
+2016/03/30 09:30:39 [error] 15#0: *389 NAXSI_FMT: ip=127.0.0.1&amp;amp;server=127.0.0.1&amp;amp;uri=/&amp;amp;learning=0&amp;amp;vers=0.55rc1&amp;amp;total_processed=112&amp;amp;total_blocked=2&amp;amp;block=1&amp;amp;cscore0=$SQL&amp;amp;score0=4&amp;amp;cscore1=$XSS&amp;amp;score1=8&amp;amp;zone0=BODY&amp;amp;id0=1008&amp;amp;var_name0=user, client: 127.0.0.1, server: owncloud_naxsi, request: &quot;POST / HTTP/1.0&quot;, host: &quot;127.0.0.1:8080&quot;
 &lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;It’s working. Have FUN!!!&lt;/strong&gt;&lt;/p&gt;
